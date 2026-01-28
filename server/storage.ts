@@ -57,12 +57,17 @@ export interface IStorage {
 export class DatabaseStorage implements IStorage {
   // Projects
   async getProjects(): Promise<Project[]> {
-    const results = await db.select().from(projects).orderBy(desc(projects.createdAt));
-    return results.map(project => ({
-      ...project,
-      tags: project.tags ? JSON.parse(project.tags as string) : null,
-      images: project.images ? JSON.parse(project.images as string) : null,
-    })) as Project[];
+    try {
+      const results = await db.select().from(projects).orderBy(desc(projects.createdAt));
+      return results.map(project => ({
+        ...project,
+        tags: project.tags ? JSON.parse(project.tags as string) : null,
+        images: project.images ? JSON.parse(project.images as string) : null,
+      })) as Project[];
+    } catch (e) {
+      console.log("[Storage] 'projects' table not found or empty, returning []");
+      return [];
+    }
   }
 
   async getProjectBySlug(slug: string): Promise<Project | undefined> {
@@ -147,7 +152,12 @@ export class DatabaseStorage implements IStorage {
 
   // Services
   async getServices(): Promise<Service[]> {
-    return await db.select().from(services);
+    try {
+      return await db.select().from(services);
+    } catch (e) {
+      console.log("[Storage] 'services' table not found, returning []");
+      return [];
+    }
   }
 
   async createService(insertService: InsertService): Promise<Service> {
@@ -182,7 +192,12 @@ export class DatabaseStorage implements IStorage {
 
   // Posts
   async getPosts(): Promise<Post[]> {
-    return await db.select().from(posts).orderBy(desc(posts.publishedAt));
+    try {
+      return await db.select().from(posts).orderBy(desc(posts.publishedAt));
+    } catch (e) {
+      console.log("[Storage] 'posts' table not found, returning []");
+      return [];
+    }
   }
 
   async getPostBySlug(slug: string): Promise<Post | undefined> {
@@ -232,7 +247,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getMessages(): Promise<Message[]> {
-    return await db.select().from(messages).orderBy(desc(messages.createdAt));
+    try {
+      return await db.select().from(messages).orderBy(desc(messages.createdAt));
+    } catch (e) {
+      console.log("[Storage] 'messages' table not found, returning []");
+      return [];
+    }
   }
 
   async getMessagesCount(): Promise<number> {
@@ -243,12 +263,17 @@ export class DatabaseStorage implements IStorage {
 
   // Rooms
   async getRooms(): Promise<Room[]> {
-    const results = await db.select().from(rooms).orderBy(desc(rooms.createdAt));
-    return results.map(room => ({
-      ...room,
-      amenities: room.amenities ? JSON.parse(room.amenities as string) : null,
-      images: room.images ? JSON.parse(room.images as string) : null,
-    })) as Room[];
+    try {
+      const results = await db.select().from(rooms).orderBy(desc(rooms.createdAt));
+      return results.map(room => ({
+        ...room,
+        amenities: room.amenities ? JSON.parse(room.amenities as string) : null,
+        images: room.images ? JSON.parse(room.images as string) : null,
+      })) as Room[];
+    } catch (e) {
+      console.log("[Storage] 'rooms' table not found, returning []");
+      return [];
+    }
   }
 
   async getRoomById(id: number): Promise<Room | undefined> {

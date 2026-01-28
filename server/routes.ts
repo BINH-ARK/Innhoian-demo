@@ -377,8 +377,13 @@ export async function registerRoutes(
     }
   });
 
-  // Seed Database
-  await seedDatabase();
+  // Seed Database (Safe wrapping)
+  try {
+    await seedDatabase();
+  } catch (err) {
+    console.warn("[Database] Selection or Seeding failed (this is expected on first run):",
+      err instanceof Error ? err.message : err);
+  }
 
   return httpServer;
 }
