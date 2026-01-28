@@ -71,23 +71,31 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getProjectBySlug(slug: string): Promise<Project | undefined> {
-    const [project] = await db.select().from(projects).where(eq(projects.slug, slug));
-    if (!project) return undefined;
-    return {
-      ...project,
-      tags: project.tags ? JSON.parse(project.tags as string) : null,
-      images: project.images ? JSON.parse(project.images as string) : null,
-    } as Project;
+    try {
+      const [project] = await db.select().from(projects).where(eq(projects.slug, slug));
+      if (!project) return undefined;
+      return {
+        ...project,
+        tags: project.tags ? JSON.parse(project.tags as string) : null,
+        images: project.images ? JSON.parse(project.images as string) : null,
+      } as Project;
+    } catch (e) {
+      return undefined;
+    }
   }
 
   async getProjectById(id: number): Promise<Project | undefined> {
-    const [project] = await db.select().from(projects).where(eq(projects.id, id));
-    if (!project) return undefined;
-    return {
-      ...project,
-      tags: project.tags ? JSON.parse(project.tags as string) : null,
-      images: project.images ? JSON.parse(project.images as string) : null,
-    } as Project;
+    try {
+      const [project] = await db.select().from(projects).where(eq(projects.id, id));
+      if (!project) return undefined;
+      return {
+        ...project,
+        tags: project.tags ? JSON.parse(project.tags as string) : null,
+        images: project.images ? JSON.parse(project.images as string) : null,
+      } as Project;
+    } catch (e) {
+      return undefined;
+    }
   }
 
   async createProject(insertProject: InsertProject): Promise<Project> {
@@ -201,13 +209,21 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getPostBySlug(slug: string): Promise<Post | undefined> {
-    const [post] = await db.select().from(posts).where(eq(posts.slug, slug));
-    return post;
+    try {
+      const [post] = await db.select().from(posts).where(eq(posts.slug, slug));
+      return post;
+    } catch (e) {
+      return undefined;
+    }
   }
 
   async getPostById(id: number): Promise<Post | undefined> {
-    const [post] = await db.select().from(posts).where(eq(posts.id, id));
-    return post;
+    try {
+      const [post] = await db.select().from(posts).where(eq(posts.id, id));
+      return post;
+    } catch (e) {
+      return undefined;
+    }
   }
 
   async createPost(insertPost: InsertPost): Promise<Post> {
