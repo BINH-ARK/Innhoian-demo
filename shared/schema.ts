@@ -65,7 +65,12 @@ export const rooms = sqliteTable("rooms", {
 
 // === SCHEMAS ===
 
-export const insertProjectSchema = createInsertSchema(projects).omit({ id: true, createdAt: true });
+export const insertProjectSchema = createInsertSchema(projects)
+  .omit({ id: true, createdAt: true })
+  .extend({
+    tags: z.array(z.string()).optional().nullable(),
+    images: z.array(z.string()).optional().nullable(),
+  });
 export const insertServiceSchema = createInsertSchema(services).omit({ id: true });
 export const insertPostSchema = createInsertSchema(posts).omit({ id: true, publishedAt: true });
 export const insertMessageSchema = createInsertSchema(messages).omit({ id: true, createdAt: true });

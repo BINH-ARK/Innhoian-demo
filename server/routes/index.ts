@@ -6,6 +6,7 @@ import { z } from "zod";
 import { registerViewDetailRoutes } from "./view-detail-routes";
 import { registerCrudRoutes } from "./crud-routes";
 import { registerAuthRoutes } from "./auth-routes";
+import { seedDatabase } from "../core/seed";
 
 export async function registerRoutes(
   httpServer: Server,
@@ -28,7 +29,7 @@ export async function registerRoutes(
   });
 
   app.get(api.projects.get.path, async (req, res) => {
-    const project = await storage.getProjectBySlug(req.params.slug);
+    const project = await storage.getProjectBySlug(req.params.slug as string);
     if (!project) {
       return res.status(404).json({ message: "Project not found" });
     }
@@ -82,7 +83,7 @@ export async function registerRoutes(
   });
 
   app.get(api.posts.get.path, async (req, res) => {
-    const post = await storage.getPostBySlug(req.params.slug);
+    const post = await storage.getPostBySlug(req.params.slug as string);
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
     }
@@ -340,7 +341,7 @@ export async function registerRoutes(
       // Log incoming request
       console.log(`[DELETE REQUEST] Received request to delete room ID: ${req.params.id}`);
 
-      const roomId = parseInt(req.params.id);
+      const roomId = parseInt(req.params.id as string);
 
       // Validate room ID
       if (isNaN(roomId)) {
@@ -381,145 +382,9 @@ export async function registerRoutes(
   try {
     await seedDatabase();
   } catch (err) {
-    console.warn("[Database] Selection or Seeding failed (this is expected on first run):",
+    console.warn("[Database] Selection or Seeding failed:",
       err instanceof Error ? err.message : err);
   }
 
   return httpServer;
-}
-
-async function seedDatabase() {
-  const existingProjects = await storage.getProjects();
-  if (existingProjects.length === 0) {
-    // Projects
-    await storage.createProject({
-      name: "Camf",
-      slug: "camf",
-      slogan: "A second home in the heart of Hoi An",
-      description: "Located amidst the An Mỹ rice fields, Camf offers a serene escape with rustic charm and modern comforts. Perfect for those seeking tranquility.",
-      airbnbUrl: "https://airbnb.com",
-      isFeatured: true,
-      tags: ["Rice Fields", "Rustic", "Peaceful"],
-      images: ["https://drive.google.com/uc?export=view&id=1PL0QlH49ImSoxj20nJ4y0W-05eX6oF70"],
-      type: "homestay"
-    });
-
-    await storage.createProject({
-      name: "Lekchi",
-      slug: "lek-chi",
-      slogan: "Cozy, rustic, and peaceful",
-      description: "A place for family bonding, where simplicity meets warmth. Experience the authentic local lifestyle.",
-      airbnbUrl: "https://airbnb.com",
-      isFeatured: true,
-      tags: ["Family", "Cozy", "Authentic"],
-      images: ["https://drive.google.com/uc?export=view&id=1PL0QlH49ImSoxj20nJ4y0W-05eX6oF70"],
-      type: "homestay"
-    });
-
-    await storage.createProject({
-      name: "Dủ dẻ",
-      slug: "du-de",
-      slogan: "A place to breathe deeply",
-      description: "Cast aside all worries and immerse yourself in nature. Tươi is designed to rejuvenate your spirit.",
-      airbnbUrl: "https://airbnb.com",
-      isFeatured: true,
-      tags: ["Nature", "Rejuvenation", "Wellness"],
-      images: ["https://drive.google.com/uc?export=view&id=1PL0QlH49ImSoxj20nJ4y0W-05eX6oF70"],
-      type: "homestay"
-    });
-
-    // Services
-    await storage.createService({
-      title: "Management & Operations",
-      description: "Comprehensive homestay management ensuring smooth operations and high guest satisfaction.",
-      icon: "settings"
-    });
-
-    await storage.createService({
-      title: "Business Consulting",
-      description: "Expert advice on homestay business models, pricing strategies, and market positioning.",
-      icon: "briefcase"
-    });
-
-    await storage.createService({
-      title: "Renovation",
-      description: "Transforming spaces into soulful homes with our design and renovation services.",
-      icon: "hammer"
-    });
-
-    // Blog Posts
-    await storage.createPost({
-      title: "Awakening the Soul of a Home",
-      slug: "awakening-soul",
-      content: "At INN HoiAn, we believe that every house has a soul waiting to be awakened. Our journey begins with understanding the history and the potential of each space...",
-      category: "Operating Stories",
-      imageUrl: "https://drive.google.com/uc?export=view&id=1PL0QlH49ImSoxj20nJ4y0W-05eX6oF70",
-      author: "INN Team"
-    });
-
-    await storage.createPost({
-      title: "The Story of Tươi",
-      slug: "story-of-tuoi",
-      content: "Tươi was born from a desire to create a sanctuary. We found an old house covered in vines and saw its potential...",
-      category: "People & Stories",
-      imageUrl: "https://images.unsplash.com/photo-1615529182904-14819c35db37?q=80&w=2880&auto=format&fit=crop",
-      author: "Founder"
-    });
-
-    // Rooms
-    await storage.createRoom({
-      name: "Deluxe Garden View",
-      type: "double",
-      price: 800000,
-      status: "available",
-      projectId: 1,
-      description: "Spacious room with beautiful garden view, perfect for couples",
-      amenities: ["Air Conditioning", "WiFi", "Mini Bar", "Private Bathroom", "Garden View"],
-      images: ["https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800"]
-    });
-
-    await storage.createRoom({
-      name: "Superior Twin Room",
-      type: "twin",
-      price: 650000,
-      status: "available",
-      projectId: 1,
-      description: "Comfortable twin beds with modern amenities",
-      amenities: ["Air Conditioning", "WiFi", "TV", "Private Bathroom"],
-      images: ["https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800"]
-    });
-
-    await storage.createRoom({
-      name: "Family Suite",
-      type: "suite",
-      price: 1200000,
-      status: "occupied",
-      projectId: 2,
-      description: "Large suite perfect for families with children",
-      amenities: ["Air Conditioning", "WiFi", "Kitchen", "Living Room", "2 Bathrooms", "Balcony"],
-      images: ["https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800"]
-    });
-
-    await storage.createRoom({
-      name: "Standard Single",
-      type: "single",
-      price: 450000,
-      status: "available",
-      projectId: 2,
-      description: "Cozy single room for solo travelers",
-      amenities: ["Air Conditioning", "WiFi", "Desk", "Private Bathroom"],
-      images: ["https://images.unsplash.com/photo-1598928506311-c55ded91a20c?w=800"]
-    });
-
-    await storage.createRoom({
-      name: "Honeymoon Suite",
-      type: "suite",
-      price: 1500000,
-      status: "available",
-      projectId: 3,
-      description: "Romantic suite with private jacuzzi and rice field view",
-      amenities: ["Air Conditioning", "WiFi", "Jacuzzi", "King Bed", "Private Terrace", "Champagne"],
-      images: ["https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800"]
-    });
-  }
 }

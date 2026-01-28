@@ -98,11 +98,11 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
-  async createProject(insertProject: InsertProject): Promise<Project> {
+  async createProject(insertProject: any): Promise<Project> {
     const projectData = {
       ...insertProject,
-      tags: insertProject.tags ? JSON.stringify(insertProject.tags) : null,
-      images: insertProject.images ? JSON.stringify(insertProject.images) : null,
+      tags: Array.isArray(insertProject.tags) ? JSON.stringify(insertProject.tags) : insertProject.tags,
+      images: Array.isArray(insertProject.images) ? JSON.stringify(insertProject.images) : insertProject.images,
     };
     const [project] = await db.insert(projects).values(projectData as any).returning();
     return {
@@ -314,11 +314,11 @@ export class DatabaseStorage implements IStorage {
     } as Room;
   }
 
-  async createRoom(insertRoom: InsertRoom): Promise<Room> {
+  async createRoom(insertRoom: any): Promise<Room> {
     const roomData = {
       ...insertRoom,
-      amenities: insertRoom.amenities ? JSON.stringify(insertRoom.amenities) : null,
-      images: insertRoom.images ? JSON.stringify(insertRoom.images) : null,
+      amenities: Array.isArray(insertRoom.amenities) ? JSON.stringify(insertRoom.amenities) : insertRoom.amenities,
+      images: Array.isArray(insertRoom.images) ? JSON.stringify(insertRoom.images) : insertRoom.images,
     };
     const [room] = await db.insert(rooms).values(roomData as any).returning();
     return {
