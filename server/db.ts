@@ -4,11 +4,27 @@ import * as schema from "@shared/schema";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+import { existsSync, mkdirSync } from "fs";
 
-// Create .local directory if it doesn't exist
-const dbPath = join(__dirname, "..", ".local", "db.sqlite");
+// Determine __dirname in both ESM and CJS environments
+let _dirname: string;
+try {
+    const __filename = fileURLToPath(import.meta.url);
+    _dirname = dirname(__filename);
+} catch (e) {
+    // Fallback for CommonJS (bundled production)
+    _dirname = __dirname;
+}
+
+// Create .local directory if it doesn't exist in the project root
+const projectRoot = join(_dirname, "..");
+const localDir = join(projectRoot, ".local");
+
+if (!existsSync(localDir)) {
+    mkdirSync(localDir, { recursive: true });
+}
+
+const dbPath = join(localDir, "db.sqlite");
 
 const sqlite = new Database(dbPath);
 export const db = drizzle(sqlite, { schema });
