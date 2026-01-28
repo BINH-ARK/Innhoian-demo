@@ -193,9 +193,13 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getServicesCount(): Promise<number> {
-    const { rawDb } = await import("./db");
-    const result = rawDb.prepare("SELECT COUNT(*) as count FROM services").get() as { count: number };
-    return result.count;
+    try {
+      const { rawDb } = await import("./db");
+      const result = rawDb.prepare("SELECT COUNT(*) as count FROM services").get() as { count: number };
+      return result.count || 0;
+    } catch (e) {
+      return 0;
+    }
   }
 
   // Posts
@@ -251,9 +255,13 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getPostsCount(): Promise<number> {
-    const { rawDb } = await import("./db");
-    const result = rawDb.prepare("SELECT COUNT(*) as count FROM posts").get() as { count: number };
-    return result.count;
+    try {
+      const { rawDb } = await import("./db");
+      const result = rawDb.prepare("SELECT COUNT(*) as count FROM posts").get() as { count: number };
+      return result.count || 0;
+    } catch (e) {
+      return 0;
+    }
   }
 
   // Messages
@@ -272,9 +280,13 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getMessagesCount(): Promise<number> {
-    const { rawDb } = await import("./db");
-    const result = rawDb.prepare("SELECT COUNT(*) as count FROM messages").get() as { count: number };
-    return result.count;
+    try {
+      const { rawDb } = await import("./db");
+      const result = rawDb.prepare("SELECT COUNT(*) as count FROM messages").get() as { count: number };
+      return result.count || 0;
+    } catch (e) {
+      return 0;
+    }
   }
 
   // Rooms
@@ -364,13 +376,21 @@ export class DatabaseStorage implements IStorage {
 
   // Users
   async getUser(id: number): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.id, id));
-    return user;
+    try {
+      const [user] = await db.select().from(users).where(eq(users.id, id));
+      return user;
+    } catch (e) {
+      return undefined;
+    }
   }
 
   async getUserByEmail(email: string): Promise<User | undefined> {
-    const [user] = await db.select().from(users).where(eq(users.email, email));
-    return user;
+    try {
+      const [user] = await db.select().from(users).where(eq(users.email, email));
+      return user;
+    } catch (e) {
+      return undefined;
+    }
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
