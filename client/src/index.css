@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Creamy White Background */
+  --background: 40 20% 97%; /* #FAF9F6 - Off white/Cream */
+  --foreground: 25 20% 25%; /* #4D3D33 - Dark Wood/Coffee */
+
+  /* Warm Wood Tones */
+  --primary: 28 45% 45%; /* #A66E4E - Warm Brown/Terracotta */
+  --primary-foreground: 40 20% 98%;
+
+  /* Soft Earthy Secondary */
+  --secondary: 40 15% 92%; /* #EBE9E4 - Light Beige */
+  --secondary-foreground: 25 20% 25%;
+
+  /* Light Yellow Accents */
+  --accent: 45 60% 85%; /* #F2E8CF - Pale Yellow/Sand */
+  --accent-foreground: 25 30% 20%;
+
+  /* Muted Text */
+  --muted: 40 10% 90%;
+  --muted-foreground: 25 10% 50%;
+
+  /* Borders & Dividers */
+  --border: 28 20% 88%;
+  --input: 28 20% 88%;
+  --ring: 28 45% 45%;
+
+  /* Cards */
+  --card: 0 0% 100%;
+  --card-foreground: 25 20% 25%;
+
+  --radius: 0.5rem;
+
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-foreground antialiased font-body selection:bg-primary/20;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display tracking-tight text-foreground font-medium;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
