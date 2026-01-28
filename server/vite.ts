@@ -1,10 +1,20 @@
-import { type Express } from "express";
+import express, { type Express } from "express";
 import { createServer as createViteServer, createLogger } from "vite";
 import { type Server } from "http";
 import viteConfig from "../vite.config";
 import fs from "fs";
-import path from "path";
+import path, { dirname, join } from "path";
+import { fileURLToPath } from "url";
 import { nanoid } from "nanoid";
+
+// Determine __dirname in both ESM and CJS environments
+let _dirname: string;
+try {
+  const __filename = fileURLToPath(import.meta.url);
+  _dirname = dirname(__filename);
+} catch (e) {
+  _dirname = __dirname;
+}
 
 const viteLogger = createLogger();
 
@@ -42,7 +52,7 @@ export async function setupVite(server: Server, app: Express) {
 
     try {
       const clientTemplate = path.resolve(
-        import.meta.dirname,
+        _dirname,
         "..",
         "client",
         "index.html",
