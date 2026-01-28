@@ -38,4 +38,4 @@ ENV PORT=3000
 
 EXPOSE 3000
 
-CMD ["node", "dist/index.cjs"]
+CMD npx drizzle-kit push && node dist/index.cjs
