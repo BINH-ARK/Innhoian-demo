@@ -9,30 +9,19 @@ import MemoryStore from "memorystore";
 import createMemoryStore from "memorystore";
 
 export function setupAuth(app: Express) {
+    const MemoryStore = createMemoryStore(session);
     const sessionSettings: session.SessionOptions = {
         secret: process.env.SESSION_SECRET || "inn-hoian-secret-key",
         resave: false,
         saveUninitialized: false,
-        // Tạo Store trước
-
-    };
-    const MemoryStore = createMemoryStore(session);
-    // ... bên trong object cấu hình session
-    session({
-        secret: process.env.SESSION_SECRET || "secret",
-        resave: false,
-        saveUninitialized: false,
-
-        // 2. Sử dụng Class đã tạo ở trên
         store: new MemoryStore({
             checkPeriod: 86400000 // prune expired entries every 24h
         }),
-
         cookie: {
             secure: process.env.NODE_ENV === "production",
             maxAge: 24 * 60 * 60 * 1000 // 24 hours
         }
-    })
+    };
 
     app.use(session(sessionSettings));
     app.use(passport.initialize());
