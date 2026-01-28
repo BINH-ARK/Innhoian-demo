@@ -4,7 +4,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - ./database:/app/.local
+      - ./.local:/app/.local
     environment:
       - NODE_ENV=production
       - PORT=3000
