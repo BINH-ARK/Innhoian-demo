@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 import passport from "passport";
-import { storage } from "./storage";
+import { storage } from "../core/storage";
 import { insertUserSchema } from "@shared/schema";
 
 /**

@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import type { Server } from "http";
-import { storage } from "./storage";
+import { storage } from "../core/storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
 import { registerViewDetailRoutes } from "./view-detail-routes";
