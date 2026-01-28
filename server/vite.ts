@@ -7,14 +7,9 @@ import path, { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import { nanoid } from "nanoid";
 
-// Determine __dirname in both ESM and CJS environments
-let _dirname: string;
-try {
-  const __filename = fileURLToPath(import.meta.url);
-  _dirname = dirname(__filename);
-} catch (e) {
-  _dirname = __dirname;
-}
+// Robust path determination for both ESM and CJS
+const _filename = typeof __filename !== 'undefined' ? __filename : fileURLToPath(import.meta.url);
+const _dirname = typeof __dirname !== 'undefined' ? __dirname : dirname(_filename);
 
 const viteLogger = createLogger();
 

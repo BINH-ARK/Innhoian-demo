@@ -6,19 +6,8 @@ import { dirname, join } from "path";
 
 import { existsSync, mkdirSync } from "fs";
 
-// Determine __dirname in both ESM and CJS environments
-let _dirname: string;
-try {
-    const __filename = fileURLToPath(import.meta.url);
-    _dirname = dirname(__filename);
-} catch (e) {
-    // Fallback for CommonJS (bundled production)
-    _dirname = __dirname;
-}
-
-// Create .local directory if it doesn't exist in the project root
+// Ensure .local directory exists in the current working directory
 const localDir = join(process.cwd(), ".local");
-
 if (!existsSync(localDir)) {
     mkdirSync(localDir, { recursive: true });
 }
