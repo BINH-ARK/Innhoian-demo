@@ -17,14 +17,14 @@ try {
 }
 
 // Create .local directory if it doesn't exist in the project root
-const projectRoot = join(_dirname, "..");
-const localDir = join(projectRoot, ".local");
+const localDir = join(process.cwd(), ".local");
 
 if (!existsSync(localDir)) {
     mkdirSync(localDir, { recursive: true });
 }
 
 const dbPath = join(localDir, "db.sqlite");
+console.log(`[Database] Using SQLite at: ${dbPath}`);
 
 const sqlite = new Database(dbPath);
 export const db = drizzle(sqlite, { schema });
