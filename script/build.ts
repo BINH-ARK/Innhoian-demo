@@ -1,3 +1,4 @@
+import { build as esbuild } from "esbuild";
 import { build as viteBuild } from "vite";
 import { rm, readFile, cp } from "fs/promises";
 
