@@ -1,0 +1,9 @@
+node_modules
+.local
+dist
+.git
+.DS_Store
+*.md
+Dockerfile
+docker-compose.yml
+render.yaml
