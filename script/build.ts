@@ -32,6 +32,9 @@ const allowlist = [
   "zod-validation-error",
 ];
 
+// Native modules and large dependencies to keep external
+const nativeExternals = ["better-sqlite3"];
+
 async function buildAll() {
   await rm("dist", { recursive: true, force: true });
 
@@ -56,7 +59,7 @@ async function buildAll() {
       "process.env.NODE_ENV": '"production"',
     },
     minify: true,
-    external: externals,
+    external: [...externals, ...nativeExternals],
     logLevel: "info",
   });
 }

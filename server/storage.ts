@@ -135,10 +135,14 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getProjectsCount(): Promise<number> {
-    // Sử dụng SQL COUNT(*) để tối ưu hiệu suất
-    const { rawDb } = await import("./db");
-    const result = rawDb.prepare("SELECT COUNT(*) as count FROM projects").get() as { count: number };
-    return result.count;
+    try {
+      const { rawDb } = await import("./db");
+      const result = rawDb.prepare("SELECT COUNT(*) as count FROM projects").get() as { count: number };
+      return result.count || 0;
+    } catch (error) {
+      console.log("[Storage] 'projects' table not found or empty, returning 0 count");
+      return 0;
+    }
   }
 
   // Services
